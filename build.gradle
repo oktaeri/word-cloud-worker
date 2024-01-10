@@ -21,6 +21,8 @@ repositories {
 	mavenCentral()
 }
 
+def postgresVersion = '42.7.1'
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -28,6 +30,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+	implementation group: 'org.postgresql',
+			name: 'postgresql',
+			version: postgresVersion
 }
 
 tasks.named('test') {
