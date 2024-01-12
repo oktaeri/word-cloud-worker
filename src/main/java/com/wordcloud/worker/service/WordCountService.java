@@ -35,8 +35,11 @@ public class WordCountService {
         Map<String, Integer> wordCounts = new HashMap<>();
 
         for (String word : words) {
-            word = word.toLowerCase();
-            wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
+            word = word.toLowerCase().trim();
+
+            if (!word.isEmpty()) {
+                wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
+            }
         }
 
         return wordCounts;

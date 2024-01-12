@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WordCountServiceTest {
     private WordCountService wordCountService;
@@ -56,6 +57,13 @@ public class WordCountServiceTest {
 
         assertEquals(5, result.get("lorem"));
         assertEquals(2, result.get("ipsum"));
+    }
+
+    @Test
+    public void testWordCountWithEmptyFile() throws IOException {
+        Map<String, Integer> result = getWordCountMap("empty_file.txt");
+
+        assertTrue(result.isEmpty());
     }
 
     private byte[] readTestFile(String fileName) throws IOException {
