@@ -1,0 +1,2 @@
+This is a test file. This file contains some words. 
+I expect wordcountservice to count the words in the file.
