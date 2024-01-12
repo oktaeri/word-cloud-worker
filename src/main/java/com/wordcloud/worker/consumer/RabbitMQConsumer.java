@@ -22,7 +22,9 @@ public class RabbitMQConsumer {
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void consume(UploadDto uploadDto) {
-        LOGGER.info(String.format("Received message -> %s", uploadDto));
+        LOGGER.info(String.format("Received message -> Token: %s MinCount: %s",
+                uploadDto.getUserToken(),
+                uploadDto.getMinimumCount()));
         wordCountService.saveWordCounts(uploadDto);
     }
 }
