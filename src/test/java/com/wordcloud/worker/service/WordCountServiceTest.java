@@ -11,8 +11,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WordCountServiceTest {
     private WordCountService wordCountService;
@@ -66,15 +65,29 @@ public class WordCountServiceTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    public void testWordCountWithMinimumCount() throws IOException {
+        Map<String, Integer> result = getWordCountMap("short_text.txt", 3);
+
+        assertNull(result.get("wordcountservice"));
+        assertNull(result.get("words"));
+        assertNull(result.get("this"));
+        assertEquals(3, result.get("file"));
+    }
+
     private byte[] readTestFile(String fileName) throws IOException {
         Path filePath = Paths.get("src/test/resources", fileName);
         return Files.readAllBytes(filePath);
     }
 
-    private Map<String, Integer> getWordCountMap(String fileName) throws IOException {
+    private Map<String, Integer> getWordCountMap(String fileName, Integer minimumCount) throws IOException {
         byte[] fileContent = readTestFile(fileName);
         List<String> wordsInFile = wordCountService.SplitFileContentToWords(fileContent);
 
-        return wordCountService.CountWordOccurrences(wordsInFile);
+        return wordCountService.CountWordOccurrences(wordsInFile, minimumCount);
+    }
+
+    private Map<String, Integer> getWordCountMap(String fileName) throws IOException {
+        return getWordCountMap(fileName, null);
     }
 }

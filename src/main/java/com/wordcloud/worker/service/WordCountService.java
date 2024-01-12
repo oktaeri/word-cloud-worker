@@ -19,7 +19,7 @@ public class WordCountService {
     public Map<String, Integer> GetResult(UploadDto uploadDto) {
         UUID userToken = UUID.fromString(uploadDto.getUserToken());
         List<String> words = SplitFileContentToWords(uploadDto.getUserFile());
-        return CountWordOccurrences(words);
+        return CountWordOccurrences(words, uploadDto.getMinimumCount());
     }
 
     List<String> SplitFileContentToWords(byte[] fileContent) {
@@ -32,6 +32,10 @@ public class WordCountService {
     }
 
     Map<String, Integer> CountWordOccurrences(List<String> words) {
+        return CountWordOccurrences(words, null);
+    }
+
+    Map<String, Integer> CountWordOccurrences(List<String> words, Integer minimumCount) {
         Map<String, Integer> wordCounts = new HashMap<>();
 
         for (String word : words) {
@@ -40,6 +44,10 @@ public class WordCountService {
             if (!word.isEmpty()) {
                 wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
             }
+        }
+
+        if (minimumCount != null && minimumCount > 0) {
+            wordCounts.entrySet().removeIf(entry -> entry.getValue() < minimumCount);
         }
 
         return wordCounts;
