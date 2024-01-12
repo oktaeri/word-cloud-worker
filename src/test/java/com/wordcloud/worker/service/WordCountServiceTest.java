@@ -33,10 +33,7 @@ public class WordCountServiceTest {
 
     @Test
     public void testWordCountWithShortTextFile() throws IOException {
-        byte[] fileContent = readTestFile("short_text.txt");
-        List<String> wordsInFile = wordCountService.SplitFileContentToWords(fileContent);
-
-        Map<String, Integer> result = wordCountService.CountWordOccurrences(wordsInFile);
+        Map<String, Integer> result = getWordCountMap("short_text.txt");
 
         assertEquals(1, result.get("wordcountservice"));
         assertEquals(2, result.get("words"));
@@ -44,8 +41,32 @@ public class WordCountServiceTest {
         assertEquals(3, result.get("file"));
     }
 
+    @Test
+    public void testWordCountWithSpecialCharacters() throws IOException {
+        Map<String, Integer> result = getWordCountMap("text_with_special_characters.txt");
+
+        assertEquals(2, result.get("kärbes"));
+        assertEquals(5, result.get("tööd"));
+        assertEquals(2, result.get("leiutajateküla"));
+    }
+
+    @Test
+    public void testWordCountWithDifferentCaseWords() throws IOException {
+        Map<String, Integer> result = getWordCountMap("text_with_different_cases.txt");
+
+        assertEquals(5, result.get("lorem"));
+        assertEquals(2, result.get("ipsum"));
+    }
+
     private byte[] readTestFile(String fileName) throws IOException {
         Path filePath = Paths.get("src/test/resources", fileName);
         return Files.readAllBytes(filePath);
+    }
+
+    private Map<String, Integer> getWordCountMap(String fileName) throws IOException {
+        byte[] fileContent = readTestFile(fileName);
+        List<String> wordsInFile = wordCountService.SplitFileContentToWords(fileContent);
+
+        return wordCountService.CountWordOccurrences(wordsInFile);
     }
 }
