@@ -36,7 +36,7 @@ public class WordCountService {
         List<String> words = splitFileContentToWords(uploadDto.getUserFile());
         Map<String, Integer> wordOccurrences = countWordOccurrences(words, uploadDto.getMinimumCount());
 
-        UserToken userToken = userTokenRepository.getTokenByText(userTokenText);
+        UserToken userToken = userTokenRepository.findByToken(userTokenText);
 
         List<WordCount> wordCounts = wordOccurrences.entrySet().stream()
                 .map(entry -> createWordCount(entry.getKey(), entry.getValue(), userToken))
@@ -78,7 +78,9 @@ public class WordCountService {
     }
 
     private WordCount createWordCount(String wordText, Integer count, UserToken userToken) {
-        Word word = wordRepository.postWord(new Word(wordText));
+        Word existingWord = wordRepository.findByWord(wordText);
+
+        Word word = existingWord != null ? existingWord : wordRepository.save(new Word(wordText));
 
         WordCount wordCount = new WordCount();
         wordCount.setCount(count);
