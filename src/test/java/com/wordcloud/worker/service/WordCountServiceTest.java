@@ -1,6 +1,5 @@
 package com.wordcloud.worker.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +17,13 @@ public class WordCountServiceTest {
 
     @BeforeEach
     public void InitializeService() {
-        wordCountService = new WordCountService(null);
+        wordCountService = new WordCountService(null, null, null);
     }
 
     @Test
     public void testWordCountWithListOfString() {
         List<String> words = List.of("Lorem", "ipsum", "dolor", "lorem", "dolor", "lorem", "lorem");
-        Map<String, Integer> wordCounts = wordCountService.CountWordOccurrences(words);
+        Map<String, Integer> wordCounts = wordCountService.countWordOccurrences(words);
 
         assertEquals(4, wordCounts.get("lorem"));
         assertEquals(2, wordCounts.get("dolor"));
@@ -82,9 +81,9 @@ public class WordCountServiceTest {
 
     private Map<String, Integer> getWordCountMap(String fileName, Integer minimumCount) throws IOException {
         byte[] fileContent = readTestFile(fileName);
-        List<String> wordsInFile = wordCountService.SplitFileContentToWords(fileContent);
+        List<String> wordsInFile = wordCountService.splitFileContentToWords(fileContent);
 
-        return wordCountService.CountWordOccurrences(wordsInFile, minimumCount);
+        return wordCountService.countWordOccurrences(wordsInFile, minimumCount);
     }
 
     private Map<String, Integer> getWordCountMap(String fileName) throws IOException {

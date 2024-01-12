@@ -1,6 +1,6 @@
 package com.wordcloud.worker.repository;
 
-import com.wordcloud.worker.model.Word;
+import com.wordcloud.worker.model.UserToken;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -9,30 +9,28 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WordRepository {
-
+public class UserTokenRepository {
     @PersistenceContext
     private EntityManager em;
 
     @Transactional
-    public Word postWord(Word word) {
-        Word existingWord = getWordByText(word.getWord());
+    public UserToken postToken(UserToken token) {
+        UserToken existingToken = getTokenByText(token.getToken());
 
-        if (existingWord == null) {
-            em.persist(word);
-            return word;
+        if (existingToken == null) {
+            em.persist(token);
         }
 
-        return existingWord;
+        return token;
     }
 
-    private Word getWordByText(String wordText) {
-        TypedQuery<Word> query = em.createQuery(
-                "select w from Word w where w.word = :word",
-                Word.class
+    public UserToken getTokenByText(String tokenText) {
+        TypedQuery<UserToken> query = em.createQuery(
+                "select ut from UserToken ut where ut.token = :token",
+                UserToken.class
         );
 
-        query.setParameter("word", wordText);
+        query.setParameter("token", tokenText);
 
         try {
             return query.getSingleResult();
@@ -40,5 +38,4 @@ public class WordRepository {
             return null;
         }
     }
-
 }

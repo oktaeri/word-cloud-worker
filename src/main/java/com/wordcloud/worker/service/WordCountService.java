@@ -1,28 +1,52 @@
 package com.wordcloud.worker.service;
 
 import com.wordcloud.worker.dto.UploadDto;
+import com.wordcloud.worker.model.UserToken;
 import com.wordcloud.worker.model.Word;
+import com.wordcloud.worker.model.WordCount;
+import com.wordcloud.worker.repository.UserTokenRepository;
+import com.wordcloud.worker.repository.WordCountRepository;
 import com.wordcloud.worker.repository.WordRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class WordCountService {
     private final WordRepository wordRepository;
+    private final WordCountRepository wordCountRepository;
+    private final UserTokenRepository userTokenRepository;
 
-    public WordCountService(WordRepository wordRepository) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WordCountService.class);
+
+    public WordCountService(WordRepository wordRepository,
+                            WordCountRepository wordCountRepository,
+                            UserTokenRepository userTokenRepository) {
         this.wordRepository = wordRepository;
+        this.wordCountRepository = wordCountRepository;
+        this.userTokenRepository = userTokenRepository;
     }
 
-    public Map<String, Integer> GetResult(UploadDto uploadDto) {
-        UUID userToken = UUID.fromString(uploadDto.getUserToken());
-        List<String> words = SplitFileContentToWords(uploadDto.getUserFile());
-        return CountWordOccurrences(words, uploadDto.getMinimumCount());
+    public void saveWordCounts(UploadDto uploadDto) {
+        String userTokenText = uploadDto.getUserToken();
+        List<String> words = splitFileContentToWords(uploadDto.getUserFile());
+        Map<String, Integer> wordOccurrences = countWordOccurrences(words, uploadDto.getMinimumCount());
+
+        UserToken userToken = userTokenRepository.getTokenByText(userTokenText);
+
+        List<WordCount> wordCounts = wordOccurrences.entrySet().stream()
+                .map(entry -> createWordCount(entry.getKey(), entry.getValue(), userToken))
+                .collect(Collectors.toList());
+
+        wordCountRepository.saveAll(wordCounts);
+        LOGGER.info(String.format("Saving completed for user -> %s", userTokenText));
     }
 
-    List<String> SplitFileContentToWords(byte[] fileContent) {
+    List<String> splitFileContentToWords(byte[] fileContent) {
         String content = new String(fileContent, StandardCharsets.UTF_8);
 
         content = content.replaceAll("\\p{Punct}", "");
@@ -31,11 +55,11 @@ public class WordCountService {
         return new ArrayList<>(Arrays.asList(words));
     }
 
-    Map<String, Integer> CountWordOccurrences(List<String> words) {
-        return CountWordOccurrences(words, null);
+    Map<String, Integer> countWordOccurrences(List<String> words) {
+        return countWordOccurrences(words, null);
     }
 
-    Map<String, Integer> CountWordOccurrences(List<String> words, Integer minimumCount) {
+    Map<String, Integer> countWordOccurrences(List<String> words, Integer minimumCount) {
         Map<String, Integer> wordCounts = new HashMap<>();
 
         for (String word : words) {
@@ -51,5 +75,16 @@ public class WordCountService {
         }
 
         return wordCounts;
+    }
+
+    private WordCount createWordCount(String wordText, Integer count, UserToken userToken) {
+        Word word = wordRepository.postWord(new Word(wordText));
+
+        WordCount wordCount = new WordCount();
+        wordCount.setCount(count);
+        wordCount.setUserToken(userToken);
+        wordCount.setWord(word);
+
+        return wordCount;
     }
 }
