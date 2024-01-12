@@ -5,6 +5,7 @@ import com.wordcloud.worker.model.Word;
 import com.wordcloud.worker.repository.WordRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -22,7 +23,7 @@ public class WordCountService {
     }
 
     List<String> SplitFileContentToWords(byte[] fileContent) {
-        String content = new String(fileContent);
+        String content = new String(fileContent, StandardCharsets.UTF_8);
 
         content = content.replaceAll("\\p{Punct}", "");
         String[] words = content.split("\\s+");
