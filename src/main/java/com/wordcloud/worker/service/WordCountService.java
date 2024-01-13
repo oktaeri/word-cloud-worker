@@ -7,8 +7,10 @@ import com.wordcloud.worker.model.WordCount;
 import com.wordcloud.worker.repository.UserTokenRepository;
 import com.wordcloud.worker.repository.WordCountRepository;
 import com.wordcloud.worker.repository.WordRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -31,7 +33,9 @@ public class WordCountService {
         this.userTokenRepository = userTokenRepository;
     }
 
-    public void saveWordCounts(UploadDto uploadDto) {
+    @Async
+    @Transactional
+    public void saveWordCountsAsync(UploadDto uploadDto) {
         String userTokenText = uploadDto.getUserToken();
         List<String> words = splitFileContentToWords(uploadDto.getUserFile());
         Map<String, Integer> wordOccurrences = countWordOccurrences(words, uploadDto.getMinimumCount());
