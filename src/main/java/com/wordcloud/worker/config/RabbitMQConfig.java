@@ -1,6 +1,7 @@
 package com.wordcloud.worker.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -45,8 +46,19 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public CachingConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+
+        connectionFactory.getRabbitConnectionFactory().setMaxInboundMessageBodySize(154857600);
+        connectionFactory.getRabbitConnectionFactory().setRequestedFrameMax(154857600);
+
+        return connectionFactory;
+    }
+
+    @Bean
     public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setConnectionFactory(connectionFactory);
         rabbitTemplate.setMessageConverter(converter());
         return rabbitTemplate;
     }
