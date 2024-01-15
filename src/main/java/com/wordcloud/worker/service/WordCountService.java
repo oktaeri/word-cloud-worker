@@ -33,18 +33,22 @@ public class WordCountService {
     @Async
     public void saveWordCountsAsync(UploadDto uploadDto) {
         String userTokenText = uploadDto.getUserToken();
+        UserToken userToken = userTokenRepository.findByToken(userTokenText);
+
+        List<WordCount> wordCounts = getWordCounts(uploadDto, userToken);
+
+        wordCountRepository.saveAll(wordCounts);
+        LOGGER.info(String.format("Saving completed for user -> %s", userTokenText));
+    }
+
+    private List<WordCount> getWordCounts(UploadDto uploadDto, UserToken userToken) {
         List<String> words = splitFileContentToWords(uploadDto.getUserFile());
         words = wordFilterService.filter(words, uploadDto.isFilterCommonWords(), uploadDto.getFilterCustomWords());
         Map<String, Integer> wordOccurrences = countWordOccurrences(words, uploadDto.getMinimumCount());
 
-        UserToken userToken = userTokenRepository.findByToken(userTokenText);
-
-        List<WordCount> wordCounts = wordOccurrences.entrySet().stream()
+        return wordOccurrences.entrySet().stream()
                 .map(entry -> createWordCount(entry.getKey(), entry.getValue(), userToken))
                 .collect(Collectors.toList());
-
-        wordCountRepository.saveAll(wordCounts);
-        LOGGER.info(String.format("Saving completed for user -> %s", userTokenText));
     }
 
     List<String> splitFileContentToWords(byte[] fileContent) {
