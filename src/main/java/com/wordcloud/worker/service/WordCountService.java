@@ -18,20 +18,23 @@ import java.util.stream.Collectors;
 public class WordCountService {
     private final WordCountRepository wordCountRepository;
     private final UserTokenRepository userTokenRepository;
+    private final WordFilterService wordFilterService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WordCountService.class);
 
     public WordCountService(
-                            WordCountRepository wordCountRepository,
-                            UserTokenRepository userTokenRepository) {
+            WordCountRepository wordCountRepository,
+            UserTokenRepository userTokenRepository, WordFilterService wordFilterService) {
         this.wordCountRepository = wordCountRepository;
         this.userTokenRepository = userTokenRepository;
+        this.wordFilterService = wordFilterService;
     }
 
     @Async
     public void saveWordCountsAsync(UploadDto uploadDto) {
         String userTokenText = uploadDto.getUserToken();
         List<String> words = splitFileContentToWords(uploadDto.getUserFile());
+        words = wordFilterService.filter(words, uploadDto.isFilterCommonWords(), uploadDto.getFilterCustomWords());
         Map<String, Integer> wordOccurrences = countWordOccurrences(words, uploadDto.getMinimumCount());
 
         UserToken userToken = userTokenRepository.findByToken(userTokenText);

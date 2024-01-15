@@ -11,4 +11,6 @@ public class UploadDto {
     private String userToken;
     private byte[] userFile;
     private Integer minimumCount;
+    private boolean filterCommonWords;
+    private String filterCustomWords;
 }

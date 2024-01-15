@@ -18,9 +18,11 @@ public class RabbitMQConsumer {
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"}, concurrency = "10")
     public void consume(UploadDto uploadDto) {
-        LOGGER.info(String.format("Received message -> Token: %s MinCount: %s",
+        LOGGER.info(String.format("Received message -> Token: %s MinCount: %s Filter: %s AnyCustom: %s",
                 uploadDto.getUserToken(),
-                uploadDto.getMinimumCount()));
+                uploadDto.getMinimumCount(),
+                uploadDto.isFilterCommonWords(),
+                !uploadDto.getFilterCustomWords().isEmpty()));
         wordCountService.saveWordCountsAsync(uploadDto);
     }
 }
