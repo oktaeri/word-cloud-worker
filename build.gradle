@@ -24,6 +24,7 @@ repositories {
 def postgresVersion = '42.7.1'
 def hibernateVersion = '6.3.1.Final'
 def hibernateValidatorVersion = '8.0.1.Final'
+def h2Version = '2.2.220'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -45,6 +46,10 @@ dependencies {
 	implementation group: 'org.hibernate',
 			name: 'hibernate-validator',
 			version: hibernateValidatorVersion
+
+	implementation group: 'com.h2database',
+			name: 'h2',
+			version: h2Version
 }
 
 tasks.named('test') {
