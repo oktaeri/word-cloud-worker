@@ -1,8 +1,6 @@
 package com.wordcloud.worker.consumer;
 
 import com.wordcloud.worker.dto.UploadDto;
-import com.wordcloud.worker.model.Word;
-import com.wordcloud.worker.repository.WordRepository;
 import com.wordcloud.worker.service.WordCountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,7 @@ public class RabbitMQConsumer {
         this.wordCountService = wordCountService;
     }
 
-    @RabbitListener(queues = {"${rabbitmq.queue.name}"})
+    @RabbitListener(queues = {"${rabbitmq.queue.name}"}, concurrency = "10")
     public void consume(UploadDto uploadDto) {
         LOGGER.info(String.format("Received message -> Token: %s MinCount: %s",
                 uploadDto.getUserToken(),

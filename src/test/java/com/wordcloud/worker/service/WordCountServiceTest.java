@@ -17,7 +17,7 @@ public class WordCountServiceTest {
 
     @BeforeEach
     public void InitializeService() {
-        wordCountService = new WordCountService(null, null, null);
+        wordCountService = new WordCountService(null, null);
     }
 
     @Test

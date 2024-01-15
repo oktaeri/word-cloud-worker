@@ -2,12 +2,9 @@ package com.wordcloud.worker.service;
 
 import com.wordcloud.worker.dto.UploadDto;
 import com.wordcloud.worker.model.UserToken;
-import com.wordcloud.worker.model.Word;
 import com.wordcloud.worker.model.WordCount;
 import com.wordcloud.worker.repository.UserTokenRepository;
 import com.wordcloud.worker.repository.WordCountRepository;
-import com.wordcloud.worker.repository.WordRepository;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -19,22 +16,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class WordCountService {
-    private final WordRepository wordRepository;
     private final WordCountRepository wordCountRepository;
     private final UserTokenRepository userTokenRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WordCountService.class);
 
-    public WordCountService(WordRepository wordRepository,
+    public WordCountService(
                             WordCountRepository wordCountRepository,
                             UserTokenRepository userTokenRepository) {
-        this.wordRepository = wordRepository;
         this.wordCountRepository = wordCountRepository;
         this.userTokenRepository = userTokenRepository;
     }
 
     @Async
-    @Transactional
     public void saveWordCountsAsync(UploadDto uploadDto) {
         String userTokenText = uploadDto.getUserToken();
         List<String> words = splitFileContentToWords(uploadDto.getUserFile());
@@ -82,14 +76,10 @@ public class WordCountService {
     }
 
     private WordCount createWordCount(String wordText, Integer count, UserToken userToken) {
-        Word existingWord = wordRepository.findByWord(wordText);
-
-        Word word = existingWord != null ? existingWord : wordRepository.save(new Word(wordText));
-
         WordCount wordCount = new WordCount();
         wordCount.setCount(count);
         wordCount.setUserToken(userToken);
-        wordCount.setWord(word);
+        wordCount.setWord(wordText);
 
         return wordCount;
     }

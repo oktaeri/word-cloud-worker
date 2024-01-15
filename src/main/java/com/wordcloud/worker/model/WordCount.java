@@ -17,15 +17,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "word_count")
 public class WordCount extends BaseEntity {
-
     @NotNull
     private Integer count;
+
+    @NotNull
+    private String word;
 
     @ManyToOne
     @JoinColumn(name = "user_token_id", referencedColumnName = "id")
     private UserToken userToken;
-
-    @ManyToOne
-    @JoinColumn(name = "word_id", referencedColumnName = "id")
-    private Word word;
 }
