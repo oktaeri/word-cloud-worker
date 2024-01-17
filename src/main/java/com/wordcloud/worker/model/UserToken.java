@@ -22,4 +22,5 @@ public class UserToken extends BaseEntity {
     private String token;
     @Column(name = "expiration_date")
     private LocalDate expirationDate;
+    private boolean processing;
 }

@@ -37,6 +37,9 @@ public class WordCountService {
 
         List<WordCount> wordCounts = getWordCounts(uploadDto, userToken);
 
+        userToken.setProcessing(false);
+        userTokenRepository.save(userToken);
+
         wordCountRepository.saveAll(wordCounts);
         LOGGER.info(String.format("Saving completed for user -> %s", userTokenText));
     }
