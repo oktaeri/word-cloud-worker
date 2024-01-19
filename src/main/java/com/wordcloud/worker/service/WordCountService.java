@@ -54,7 +54,7 @@ public class WordCountService {
                 .collect(Collectors.toList());
     }
 
-    List<String> splitFileContentToWords(byte[] fileContent) {
+    protected List<String> splitFileContentToWords(byte[] fileContent) {
         String content = new String(fileContent, StandardCharsets.UTF_8);
 
         content = content.replaceAll("\\p{Punct}", "");
@@ -63,11 +63,11 @@ public class WordCountService {
         return new ArrayList<>(Arrays.asList(words));
     }
 
-    Map<String, Integer> countWordOccurrences(List<String> words) {
+    protected Map<String, Integer> countWordOccurrences(List<String> words) {
         return countWordOccurrences(words, null);
     }
 
-    Map<String, Integer> countWordOccurrences(List<String> words, Integer minimumCount) {
+    protected Map<String, Integer> countWordOccurrences(List<String> words, Integer minimumCount) {
         Map<String, Integer> wordCounts = new HashMap<>();
 
         for (String word : words) {

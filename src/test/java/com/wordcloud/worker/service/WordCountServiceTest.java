@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WordCountServiceTest {
+class WordCountServiceTest {
     private WordCountService wordCountService;
 
     @BeforeEach
@@ -21,7 +21,7 @@ public class WordCountServiceTest {
     }
 
     @Test
-    public void countWordOccurrences_fromList_shouldHaveCorrectAmounts() {
+    void givenListOfWords_whenCountingWords_thenShouldCountWordsCorrectly() {
         List<String> words = List.of("Lorem", "ipsum", "dolor", "lorem", "dolor", "lorem", "lorem");
         Map<String, Integer> wordCounts = wordCountService.countWordOccurrences(words);
 
@@ -31,7 +31,7 @@ public class WordCountServiceTest {
     }
 
     @Test
-    public void countWordOccurrences_fromFile_shouldHaveCorrectAmounts() throws IOException {
+    void givenTextFile_thenShouldCountWordsCorrectly() throws IOException {
         Map<String, Integer> result = getWordCountMap("short_text.txt");
 
         assertEquals(1, result.get("wordcountservice"));
@@ -41,7 +41,7 @@ public class WordCountServiceTest {
     }
 
     @Test
-    public void countWordOccurrences_withSpecialCharacters_shouldHaveCorrectAmounts() throws IOException {
+    void givenWordsWithSpecialCharacters_thenShouldCountWordsCorrectly() throws IOException {
         Map<String, Integer> result = getWordCountMap("text_with_special_characters.txt");
 
         assertEquals(2, result.get("kärbes"));
@@ -50,7 +50,7 @@ public class WordCountServiceTest {
     }
 
     @Test
-    public void countWordOccurrences_withDifferentCaseWords_shouldHaveCorrectAmounts() throws IOException {
+    void givenWordsWithDifferentCases_thenShouldCountWordsCorrectly() throws IOException {
         Map<String, Integer> result = getWordCountMap("text_with_different_cases.txt");
 
         assertEquals(5, result.get("lorem"));
@@ -58,14 +58,14 @@ public class WordCountServiceTest {
     }
 
     @Test
-    public void countWordOccurrences_withEmptyFile_shouldBeEmpty() throws IOException {
+    void givenEmptyFile_thenResultShouldBeEmpty() throws IOException {
         Map<String, Integer> result = getWordCountMap("empty_file.txt");
 
         assertTrue(result.isEmpty());
     }
 
     @Test
-    public void countWordOccurrences_withMinimumCount_shouldHaveCorrectAmounts() throws IOException {
+    void givenFileWithMinimumCount_shouldNotIncludeWordsWithLessOccurrences() throws IOException {
         Map<String, Integer> result = getWordCountMap("short_text.txt", 3);
 
         assertNull(result.get("wordcountservice"));

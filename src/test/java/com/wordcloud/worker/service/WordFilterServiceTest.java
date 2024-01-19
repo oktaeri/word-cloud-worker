@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WordFilterServiceTest {
+class WordFilterServiceTest {
     private WordFilterService wordFilterService;
 
     @BeforeEach
@@ -17,7 +17,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCommonWords_shouldRemoveCommonWords(){
+    void givenListOfWords_whenFilteringWordsAndExcludingCommon_thenShouldNotContainCommonWords(){
         List<String> originalWords = new ArrayList<>(List.of("the", "quick", "on", "fox", "jumped", "at", "the", "lazy", "fox"));
         List<String> filteredWords = wordFilterService.filter(originalWords, true, "");
 
@@ -27,7 +27,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCommonWords_shouldNotRemoveUncommonWords(){
+    void givenListOfWords_whenFilteringWordsAndExcludingCommon_thenShouldNotRemoveUncommonWords(){
         List<String> originalWords = new ArrayList<>(List.of("the", "quick", "on", "fox", "jumped", "at", "the", "lazy", "fox"));
         List<String> filteredWords = wordFilterService.filter(originalWords, true, "");
 
@@ -36,7 +36,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomWords_withOneCustomWord_shouldRemoveCustomWord() {
+    void whenFilteringWordsAndExcludingOneCustomWord_thenShouldNotContainCustomWord() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick",
                 "on", "fox", "jumped", "at", "the", "lazy", "fox",
                 "garbage", "fox", "dog"));
@@ -46,7 +46,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomWords_withMultipleCustomWords_shouldRemoveCustomWords() {
+    void whenFilteringWordsAndExcludingMultipleCustomWords_thenShouldNotContainCustomWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick",
                 "on", "fox", "jumped", "at", "the", "lazy", "fox",
                 "garbage", "fox", "dog"));
@@ -57,7 +57,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomWords_shouldNotRemoveOtherWords() {
+    void whenFilteringCustomWords_thenShouldNotRemoveOtherWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick",
                 "on", "fox", "jumped", "at", "the", "lazy", "fox",
                 "garbage", "fox", "dog"));
@@ -69,7 +69,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomAndCommonWords_shouldRemoveCustomAndCommonWords() {
+    void whenFilteringCommonAndCustomWords_thenShouldNotContainCommonAndCustomWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick",
                 "on", "fox", "jumped", "at", "the", "lazy", "fox",
                 "garbage", "fox", "dog"));
@@ -82,7 +82,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomAndCommonWords_shouldNotRemoveOtherWords() {
+    void whenFilteringCommonAndCustomWords_thenShouldNotRemoveOtherWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick",
                 "on", "fox", "jumped", "at", "the", "lazy", "fox",
                 "garbage", "fox", "dog"));
@@ -94,7 +94,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterNothing_shouldNotRemoveAnyWords() {
+    void whenFilteringNothing_thenShouldNotRemoveAnyWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick", "on"));
         List<String> filteredWords = wordFilterService.filter(originalWords, false, "");
 
@@ -104,7 +104,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomWords_withDifferentCases_shouldRemoveCorrectWords() {
+    void whenFilteringCustomWordsWithDifferentCases_thenShouldNotContainCustomWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "quick", "on", "tomato", "toast"));
         List<String> filteredWords = wordFilterService.filter(originalWords, false, "TOAST, tomATo");
 
@@ -113,7 +113,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomWords_withSpecialCharacters_shouldRemoveCorrectWords() {
+    void whenFilteringCustomWordsWithSpecialCharacters_thenShouldNotContainCustomWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "qüick", "ön", "tomato", "töäst"));
         List<String> filteredWords = wordFilterService.filter(originalWords, false, "töäst, ön");
 
@@ -122,7 +122,7 @@ public class WordFilterServiceTest {
     }
 
     @Test
-    public void filterCustomWords_withSpecialCharactersAndDifferentCases_shouldRemoveCorrectWords() {
+    void whenFilteringCustomWordsWithSpecialCharactersAndDifferentCases_thenShouldNotContainCustomWords() {
         List<String> originalWords = new ArrayList<>(List.of("red", "qüick", "ön", "tomato", "töäst"));
         List<String> filteredWords = wordFilterService.filter(originalWords, false, "tÖäST, öN");
 
