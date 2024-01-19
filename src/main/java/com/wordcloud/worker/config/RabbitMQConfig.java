@@ -21,6 +21,8 @@ public class RabbitMQConfig {
 
     @Value("${rabbitmq.routing.key}")
     private String routingKey;
+    @Value("${spring.rabbitmq.host}")
+    private String hostName;
 
     @Bean
     public Queue queue() {
@@ -47,7 +49,7 @@ public class RabbitMQConfig {
 
     @Bean
     public CachingConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(hostName);
 
         connectionFactory.getRabbitConnectionFactory().setMaxInboundMessageBodySize(154857600);
         connectionFactory.getRabbitConnectionFactory().setRequestedFrameMax(154857600);

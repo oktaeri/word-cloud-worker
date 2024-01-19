@@ -1,5 +1,6 @@
 package com.wordcloud.worker.service;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class WordFilterService {
 
-    private static final String STOP_WORDS_FILE_PATH = "src/main/resources/filter/stop_words.txt";
+    private static final String STOP_WORDS_FILE_PATH = "filter/stop_words.txt";
 
     public List<String> filter(List<String> words, boolean filterCommon, String customWords) {
         Set<String> customWordsSet;
@@ -46,8 +47,8 @@ public class WordFilterService {
     }
 
     private Set<String> parseStopWordsFromFile() throws IOException {
-        Path path = Path.of(WordFilterService.STOP_WORDS_FILE_PATH);
-        try (var lines = Files.lines(path)) {
+        ClassPathResource resource = new ClassPathResource(STOP_WORDS_FILE_PATH);
+        try (var lines = Files.lines(Path.of(resource.getURI()))) {
             return lines.map(String::trim)
                     .collect(Collectors.toSet());
         }
